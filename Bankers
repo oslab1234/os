@@ -1,0 +1,77 @@
+#include<stdio.h>
+void main()
+{
+ int procno,i,j,k,index=0,flag=0;
+ int finish[5]={0};
+ int alloc[5][3]={
+ {0,1,0},
+ {2,0,0},
+ {3,0,2},
+ {2,1,1},
+ {0,0,2}
+ };
+ int max[5][3]={
+ {7,5,3},
+ {3,2,2},
+ {9,0,2},
+ {2,2,2},
+ {4,3,3}
+ };
+ int need[5][3],result[5];
+ int avail[3]={3,3,2};
+ int newRequest[3];
+ printf("Banker's Algorithm :\n");
+ printf("For the new request, Enter the process no : ");
+ scanf("%d",&procno);
+ printf("Enter the new request : ");
+ for(i=0;i<3;i++)
+ scanf("%d",&newRequest[i]);
+ for(i=0;i<3;i++)
+ {
+ alloc[procno][i]=alloc[procno][i]+newRequest[i];
+ avail[i]=avail[i]-newRequest[i];
+ }
+ for(i=0;i<5;i++)
+ for(j=0;j<3;j++)
+ need[i][j]=max[i][j]-alloc[i][j];
+ for(k=0;k<5;k++)
+ {
+ for(i=0;i<5;i++)
+ {
+ if(finish[i]==0)
+ {
+ flag=0;
+ for(j=0;j<3;j++)
+ {if(need[i][j]>avail[j])
+ {
+ flag=1;
+ break;
+ }
+ }
+ if(flag==0)
+ {
+ result[index++]=i;
+ for(j=0;j<3;j++)
+ avail[j]=avail[j]+alloc[i][j];
+ finish[i]=1;
+ }
+ }
+ }
+ }
+ if(flag==1)
+ { 
+ printf("Request cannot be granted now , as it may lead to Deadlock\n as their is no safe
+sequence\n");
+ printf("your request is not granted to Avoid DeadLock");
+ printf(" Process has to wait\n");
+ }
+ else
+ {
+ printf("Request can be granted, as a safe sequence present\n");
+ printf("Their will be no deadlock\n");
+ printf("Following is the SAFE Sequence\n");
+ for (i = 0; i < 4; i++)
+ printf(" P%d ->", result[i]);
+ printf(" P%d", result[4]);
+ }
+}
